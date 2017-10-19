@@ -10,4 +10,114 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 fi
 
-# Customize to your needs...
+alias email="NOTMUCH_CONFIG=${HOME}/.config/mail/nokia/notmuch-config gvim -v -c ':NotMuch'"
+alias ssh='TERM=xterm ssh'
+alias vim='nvim'
+alias tmuxa='tmux -2 attach-session -t corentin'
+alias ls='exa'
+alias tree='exa -T'
+alias l='exa'
+# alias cat='bat'
+
+# added by travis gem
+# [ -f /home/corentih/.travis/travis.sh ] && source /home/corentih/.travis/travis.sh
+
+source /usr/share/fzf/key-bindings.zsh
+source /usr/share/fzf/completion.zsh
+
+# Default command to use when input is tty. That filters out hidden files and files ignored by cvs
+export FZF_DEFAULT_COMMAND='rg --files --hidden '
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+
+# Use rg to generate the list for directory completion
+# From https://github.com/junegunn/fzf/issues/1067#issuecomment-334290961
+_fzf_compgen_dir() {
+	rg --hidden --files . 2>/dev/null | awk 'function dirname(fn) { if (fn == "") return ".";  if (fn !~ "[^/]") return "/"; sub("/*$", "", fn); if (fn !~ "/") return "."; sub("/[^/]*$", "", fn); if (fn == "") fn = "/"; return fn } {$0 = dirname($0)} !a[$0]++'
+}
+
+regress="/usr/global/bin/regress -notify corentin.henry@nokia.com -elasticMode standalone -vsdMode standalone -framework pygash -altBaseimages traffic-el73=04"
+runnsg="${regress} -physTopology nsg"
+runvsp="${regress} -physTopology vsp"
+
+alias regress="${regress}"
+alias runnsg="${runnsg}"
+alias runvsp="${runvsp}"
+alias pausensg="${runnsg} -runSuite sanity -forcePause pygash"
+alias pausevsp="${runvsp} -runSuite sanity -forcePause pygash"
+alias runexpress="${runvsp} -runSuite sanity express "
+alias runospf="${runnsg} -runSuite sanity ospf_provisioning"
+alias rundhcp="${runvsp} -runSuite sanity dhcp_range"
+
+# alias asciicast2gif='npm-exec asciicast2gif'
+alias asciicast2gif='docker run --rm -v $PWD:/data asciinema/asciicast2gif'
+
+if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/runcoms/vrs.zsh" ]]; then
+    source "${ZDOTDIR:-$HOME}/.zprezto/runcoms/vrs.zsh"
+fi
+
+if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/runcoms/git_proxy.zsh" ]]; then
+    source "${ZDOTDIR:-$HOME}/.zprezto/runcoms/git_proxy.zsh"
+fi
+
+alias weechat='TERM=tmux weechat'
+
+# ruby
+export GEM_PATH=${HOME}/.gem/ruby/2.4.0
+export GEM_HOME=${HOME}/.gem
+
+# rust
+export CARGO_INCREMENTAL=1
+export RUST_BACKTRACE=1
+
+# go
+export GOPATH=${HOME}/code/golang
+
+# python
+export WORKON_HOME="${HOME}/.virtualenvs"
+source /usr/bin/virtualenvwrapper_lazy.sh
+
+# clojure
+# See: https://github.com/brandonbloom/fipp/issues/60#issuecomment-470468952
+export LEIN_USE_BOOTCLASSPATH=no
+
+# nodejs/npm
+source /usr/share/nvm/init-nvm.sh
+export NVM_DIR="$HOME/.nvm"
+export NVM_SOURCE="/usr/share/nvm" # The AUR package installs it to here.
+[ -s "$NVM_SOURCE/nvm.sh" ] && . "$NVM_SOURCE/nvm.sh" # Load NVM
+# export NODE_PATH=$(npm root -g)
+# export NODE_PATH="${HOME}/.npm-global/lib/node_modules"
+# export NODE_BIN="${HOME}/.npm-global/bin"
+
+export PATH="$PATH:${GEM_PATH}/bin:$HOME/.bin:${GOPATH}/bin:$HOME/.cargo/bin:${NODE_BIN}"
+export WORKSTATION=135.227.179.135
+
+export SPACESHIP_DIR_TRUNC=0
+export SPACESHIP_DIR_TRUNC_REPO=false
+# export SPACESHIP_DIR_COLOR=blue
+# export SPACESHIP_GIT_BRANCH_COLOR=green
+# export SPACESHIP_VENV_COLOR=yellow
+export SPACESHIP_DIR_PREFIX=
+export SPACESHIP_VENV_PREFIX='('
+export SPACESHIP_VENV_SUFFIX=')'
+export SPACESHIP_PYENV_PREFIX='('
+export SPACESHIP_PYENV_SUFFIX=')'
+export SPACESHIP_HOST_COLOR='\e[90m'
+export SPACESHIP_HOST_SHOW=always
+export SPACESHIP_HOST_PREFIX='@'
+export SPACESHIP_GIT_PREFIX=
+export SPACESHIP_CHAR_SYMBOL='$ '
+export SPACESHIP_PROMPT_ORDER=(
+  # user          # Username section
+  host          # Hostname section
+  git           # Git section (git_branch + git_status)
+  venv          # virtualenv section
+  pyenv         # Pyenv section
+  # kubecontext   # Kubectl context section
+  jobs          # Background jobs indicator
+  exit_code     # Exit code section
+  line_sep      # Line break
+  dir           # Current directory section
+  char          # Prompt character
+  )
+[ -f /opt/miniconda3/etc/profile.d/conda.sh ] && source /opt/miniconda3/etc/profile.d/conda.sh
