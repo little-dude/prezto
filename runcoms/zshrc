@@ -11,3 +11,28 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
 fi
 
 # Customize to your needs...
+eval "$(starship init zsh)"
+
+alias ls='exa'
+alias tree='exa -T'
+alias l='exa'
+alias vim='nvim'
+alias be='bundle exec'
+
+# Default command to use when input is tty. That filters out hidden files and files ignored by cvs
+export FZF_DEFAULT_COMMAND='rg --files --hidden '
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+
+# Use rg to generate the list for directory completion
+# From https://github.com/junegunn/fzf/issues/1067#issuecomment-334290961
+_fzf_compgen_dir() {
+	rg --hidden --files . 2>/dev/null | awk 'function dirname(fn) { if (fn == "") return ".";  if (fn !~ "[^/]") return "/"; sub("/*$", "", fn); if (fn !~ "/") return "."; sub("/[^/]*$", "", fn); if (fn == "") fn = "/"; return fn } {$0 = dirname($0)} !a[$0]++'
+}
+
+
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+eval "$(rbenv init -)"
+
+export PATH="$HOME/.local/bin:$PATH"
